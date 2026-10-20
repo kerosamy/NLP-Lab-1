@@ -9,6 +9,9 @@ import numpy as np
 MODEL_NAMES = {
     "numpy": "NumPy Naive Bayes",
     "sklearn": "scikit-learn Naive Bayes",
+    "numpy_logistic": "NumPy Logistic Regression",
+    "sklearn_logistic": "scikit-learn LogisticRegression",
+    "sklearn_sgd": "scikit-learn SGDClassifier (log loss)",
 }
 
 

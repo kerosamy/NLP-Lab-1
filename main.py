@@ -4,6 +4,12 @@ from evaluation import MODEL_NAMES, evaluate_models, print_evaluation, save_resu
 from numpy_model import NumpyMultinomialNB
 from sklearn_model import SklearnMultinomialNB
 from splitting import LABEL_NAMES, load_and_split
+from LogisticRegression.features import BigramVectorizer
+from LogisticRegression.numpy_model import NumpyLogisticRegression
+from LogisticRegression.sklearn_models import (
+    SklearnLogisticRegression,
+    SklearnSGDClassifier,
+)
 
 
 def main():
@@ -18,10 +24,26 @@ def main():
     sklearn_model = SklearnMultinomialNB(alpha=1.0, vocabulary=numpy_model.vocabulary_)
     sklearn_model.fit(train_texts, train_labels)
 
-    # 3. Evaluate both models and save the results.
+    # 3. Build binary bigram features from training data only, then compare
+    # three logistic regression implementations on identical sparse matrices.
+    vectorizer = BigramVectorizer()
+    train_bigrams = vectorizer.fit_transform(train_texts)
+    test_bigrams = vectorizer.transform(test_texts)
+
+    numpy_logistic = NumpyLogisticRegression()
+    numpy_logistic.fit(train_bigrams, train_labels)
+    sklearn_logistic = SklearnLogisticRegression()
+    sklearn_logistic.fit(train_bigrams, train_labels)
+    sklearn_sgd = SklearnSGDClassifier()
+    sklearn_sgd.fit(train_bigrams, train_labels)
+
+    # 4. Evaluate all models and save the results.
     predictions = {
         "numpy": numpy_model.predict(test_texts),
         "sklearn": sklearn_model.predict(test_texts),
+        "numpy_logistic": numpy_logistic.predict(test_bigrams),
+        "sklearn_logistic": sklearn_logistic.predict(test_bigrams),
+        "sklearn_sgd": sklearn_sgd.predict(test_bigrams),
     }
     results = evaluate_models(test_labels, predictions, LABEL_NAMES)
     for model_name, metrics in results.items():
