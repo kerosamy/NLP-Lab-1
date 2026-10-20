@@ -1,0 +1,45 @@
+# Python environments and caches
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.cache/
+
+# Local datasets and generated results
+data/
+dataset/
+datasets/
+results/
+outputs/
+*.csv
+*.tsv
+*.parquet
+*.arrow
+*.jsonl
+
+# Model files, arrays, and archives
+*.npy
+*.npz
+*.pkl
+*.pickle
+*.joblib
+*.pt
+*.pth
+*.onnx
+*.safetensors
+*.ckpt
+*.bin
+*.h5
+*.hdf5
+*.zip
+*.7z
+*.tar
+*.gz
+
+# Local credentials
+.env
+.env.*
+!.env.example
