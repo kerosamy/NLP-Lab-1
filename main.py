@@ -1,8 +1,8 @@
 from pathlib import Path
 
-from evaluation import MODEL_NAMES, evaluate_models, print_evaluation, save_results
-from numpy_model import NumpyMultinomialNB
-from sklearn_model import SklearnMultinomialNB
+from Evaluation.evaluation import MODEL_NAMES, evaluate_models, print_evaluation, save_results
+from NaiveBayes.numpy_model import NumpyMultinomialNB
+from NaiveBayes.sklearn_model import SklearnMultinomialNB
 from splitting import LABEL_NAMES, load_and_split
 from LogisticRegression.features import BigramVectorizer
 from LogisticRegression.numpy_model import NumpyLogisticRegression
