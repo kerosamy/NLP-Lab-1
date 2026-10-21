@@ -4,8 +4,7 @@ import numpy as np
 
 
 class NumpyLogisticRegression:
-    # Defaults selected using validation rows from the training partition only.
-    def __init__(self, learning_rate=10.0, epochs=60, batch_size=128, seed=42, l2=0.0):
+    def __init__(self, learning_rate=1.0, epochs=100, batch_size=16, seed=42, l2=0.0):
         self.learning_rate = float(learning_rate)
         self.epochs = int(epochs)
         self.batch_size = int(batch_size)
