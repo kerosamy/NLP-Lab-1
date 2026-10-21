@@ -4,11 +4,13 @@ import numpy as np
 
 
 class NumpyLogisticRegression:
-    def __init__(self, learning_rate=0.1, epochs=30, batch_size=128, seed=42):
+    # Defaults selected using validation rows from the training partition only.
+    def __init__(self, learning_rate=10.0, epochs=60, batch_size=128, seed=42, l2=0.0):
         self.learning_rate = float(learning_rate)
         self.epochs = int(epochs)
         self.batch_size = int(batch_size)
         self.seed = seed
+        self.l2 = float(l2)
 
     @staticmethod
     def _softmax(scores):
@@ -31,24 +33,25 @@ class NumpyLogisticRegression:
         generator = np.random.default_rng(self.seed)
         for _ in range(self.epochs):
             shuffled = generator.permutation(rows)
-            epoch_loss = 0.0
-            seen = 0
             for start in range(0, rows, self.batch_size):
                 indices = shuffled[start:start + self.batch_size]
                 batch = features[indices]
                 targets = encoded[indices]
                 errors = self._softmax(batch @ self.weights_ + self.bias_)
-                epoch_loss -= np.log(
-                    np.clip(errors[np.arange(len(indices)), targets], 1e-15, 1.0)
-                ).sum()
-                seen += len(indices)
                 errors[np.arange(len(indices)), targets] -= 1.0
                 errors /= len(indices)
                 weight_gradient = np.asarray(batch.T @ errors)
+                if self.l2 > 0:
+                    weight_gradient += self.l2 * self.weights_
                 bias_gradient = errors.sum(axis=0)
                 self.weights_ -= self.learning_rate * weight_gradient
                 self.bias_ -= self.learning_rate * bias_gradient
-            self.loss_history_.append(epoch_loss / seen)
+            # Record the loss of the updated model, not a mix of earlier batches.
+            probabilities = self.predict_proba(features)
+            correct_class_probabilities = probabilities[np.arange(rows), encoded]
+            loss = -np.log(np.clip(correct_class_probabilities, 1e-15, 1.0)).mean()
+            loss += 0.5 * self.l2 * np.sum(self.weights_ ** 2)
+            self.loss_history_.append(float(loss))
         return self
 
     def predict_proba(self, features):

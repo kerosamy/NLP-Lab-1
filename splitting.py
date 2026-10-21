@@ -3,6 +3,7 @@
 import re
 
 import numpy as np
+from sklearn.feature_extraction.text import ENGLISH_STOP_WORDS
 
 DATASET_ID = "avsolatorio/mteb-emotion-avs_triplets"
 DATASET_REVISION = "7af7023e3f8be456bfe17846aaed40301048d0fe"
@@ -12,8 +13,9 @@ LABEL_NAMES = ["sadness", "joy", "love", "anger", "fear", "surprise"]
 
 
 def preprocess(text):
-    """Clean any English sentence; use .split() on the result to get word tokens."""
+    """Lowercase, extract words, and remove common English stopwords."""
     words = re.findall(r"[a-z]+", text.lower())
+    words = [word for word in words if word not in ENGLISH_STOP_WORDS]
     return " ".join(words)
 
 
